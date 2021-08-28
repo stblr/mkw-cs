@@ -33,3 +33,32 @@ Both the client and the server patchsets are compatible with Wii, vWii and Dolph
     - [ ] Socket code
     - [ ] Protocol reader/writer
     - [ ] Connect everything together
+
+# Building
+
+1. Download and build the CodeWarrior-compatible LLVM.
+
+   ```bash
+   mkdir tools
+
+   cd tools
+
+   git clone git@github.com:DotKuribo/llvm-project.git
+
+   cd llvm-project
+
+   mkdir build
+
+   cd build
+
+   cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGETS_TO_BUILD=PowerPC -DLLVM_ENABLE_PROJECTS=clang ../llvm
+
+   cmake --build .
+   ```
+
+2. Build the loader.
+
+   ```bash
+   cd ../../loader
+   make
+   ```

@@ -1,0 +1,4 @@
+*.o
+
+loader/main.elf
+tools/llvm-project
