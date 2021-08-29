@@ -1,4 +1,4 @@
 *.o
 
-loader/main.elf
+loader/boot.elf
 tools/llvm-project
