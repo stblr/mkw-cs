@@ -6,8 +6,9 @@
 // - https://wiibrew.org/wiki/IOS
 // - https://wiibrew.org/wiki/Hardware/IPC
 
-#include "cache.h"
 #include "ios.h"
+
+#include "cache.h"
 
 #include <string.h>
 
