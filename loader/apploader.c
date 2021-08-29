@@ -8,6 +8,8 @@
 
 #include "apploader.h"
 
+#include "cache.h"
+
 struct partition_group {
     u32 count;
     u32 offset_shifted;
@@ -91,6 +93,7 @@ bool apploader_load(struct apploader *apploader) {
     if (!di_read((void *)0x81200000, hdr.size + hdr.trailer, 0x2460)) {
         return false;
     }
+    invalidate_icache_range((void *)0x81200000, hdr.size + hdr.trailer);
 
     hdr.entry(&apploader->init, &apploader->main, &apploader->close);
 
@@ -112,6 +115,7 @@ bool apploader_run(const struct apploader *apploader, fn_apploader_game_entry *g
         if (!di_read(dst, size, shifted_offset << 2)) {
             return false;
         }
+        invalidate_icache_range(dst, size);
     }
 
     *game_entry = apploader->close();

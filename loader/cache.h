@@ -7,3 +7,5 @@
 void invalidate_dcache_range(void *start, size_t size);
 
 void flush_dcache_range(void *start, size_t size);
+
+void invalidate_icache_range(void *start, size_t size);
