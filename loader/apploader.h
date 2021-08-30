@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "di.h"
+#include "types.h"
 
 typedef void (*fn_apploader_report)(const char *format, ...);
 typedef void (*fn_apploader_game_entry)(void);

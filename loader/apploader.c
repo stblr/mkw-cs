@@ -9,6 +9,7 @@
 #include "apploader.h"
 
 #include "cache.h"
+#include "di.h"
 
 struct partition_group {
     u32 count;
