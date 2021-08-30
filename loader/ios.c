@@ -78,7 +78,6 @@ static void ipc_recv_reply(void) {
     u32 reply;
     do {
         while ((ipc_read(HW_IPC_PPCCTRL) & Y1) != Y1);
-
         reply = ipc_read(HW_IPC_ARMMSG);
         ipc_write(HW_IPC_PPCCTRL, Y1);
 
