@@ -6,7 +6,7 @@ AS = $(CC)
 COMMONFLAGS = --target=powerpc-kuribo-eabi -nostdlib -Wall -Wextra
 CFLAGS = $(COMMONFLAGS) -fno-asynchronous-unwind-tables -O2
 ASFLAGS = $(COMMONFLAGS) -c
-LDFLAGS = $(COMMONFLAGS) -fuse-ld=lld -Wl,--image-base=0x80800000,--no-dynamic-linker
+LDFLAGS = $(COMMONFLAGS) -fuse-ld=lld -Wl,--image-base=0x80810000,--no-dynamic-linker
 
 all: boot.elf
 

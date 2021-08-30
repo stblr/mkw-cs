@@ -9,9 +9,10 @@ _start:
     rlwinm r3, r3, 0, 17, 15
     mtmsr r3
 
-    # Initialize stack pointer
-    lis r1, .Lstack_top@h
-    ori r1, r1, .Lstack_top@l
+    # Initialize the stack pointer
+    .set stack_top, 0x8080fff0
+    lis r1, stack_top@h
+    ori r1, r1, stack_top@l
 
     # Jump to C code
     bl main
@@ -23,9 +24,3 @@ _start:
 dolphin_load_wii_mode:
     # The presence of such an instruction is the criterion for Dolphin to load an ELF in Wii mode.
     mtspr HID4, r3
-
-# TODO there must be a better way to to this
-.data
-.Lstack_bottom:
-    .space 0x4000
-.Lstack_top:
