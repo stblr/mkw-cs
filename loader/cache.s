@@ -41,7 +41,7 @@ flush_dcache_range:
 
     # Flush the blocks in a loop
 .Lflush_dc_loop:
-    dcbi 0, r3
+    dcbf 0, r3
     addi r3, r3, 0x20
     bdnz .Lflush_dc_loop
 
