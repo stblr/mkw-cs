@@ -133,7 +133,6 @@ s32 ios_ioctl(s32 fd, u32 ioctl, void *in_buf, size_t in_size, void *out_buf, si
     ipc_recv_reply();
 
     invalidate_dcache_range(out_buf, out_size);
-    invalidate_dcache_range(in_buf, in_size);
 
     return ipc.result;
 }
@@ -159,13 +158,12 @@ s32 ios_ioctlv(s32 fd, u32 ioctlv, size_t in_count, size_t out_count, struct ioc
     ipc_send_request();
     ipc_recv_reply();
 
-    for (u32 i = 0; i < in_count + out_count; i++) {
+    for (u32 i = in_count; i < in_count + out_count; i++) {
         if (vec[i].data) {
             vec[i].data = mem_physical_to_virtual((u32)vec[i].data);
             invalidate_dcache_range(vec[i].data, vec[i].size);
         }
     }
-    invalidate_dcache_range(vec, (in_count + out_count) * sizeof(struct ioctlv *));
 
     return ipc.result;
 }
