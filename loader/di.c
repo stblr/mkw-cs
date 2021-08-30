@@ -32,10 +32,6 @@ static u8 di_ipc_tmd[0x49e4] __attribute__((aligned(0x20)));
 static s32 di_fd = -1;
 
 bool di_init(void) {
-    if (di_fd >= 0) {
-        return true;
-    }
-
     di_fd = ios_open(di_ipc_path, 0);
     return di_fd >= 0;
 }
@@ -109,4 +105,10 @@ bool di_reset(void) {
     s32 ret = ios_ioctl(di_fd, DI_IOCTL_RESET, di_ipc_in, sizeof(di_ipc_in), NULL, 0);
 
     return ret == DI_RESULT_SUCCESS;
+}
+
+bool di_fini(void) {
+    bool ret = ios_close(di_fd) == 0;
+    di_fd = -1;
+    return ret;
 }

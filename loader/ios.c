@@ -104,6 +104,18 @@ s32 ios_open(const char *path, u32 mode) {
     return ipc.result;
 }
 
+s32 ios_close(s32 fd) {
+    memset(&ipc, 0, sizeof(ipc));
+
+    ipc.cmd = IPC_CMD_CLOSE;
+    ipc.fd = fd;
+
+    ipc_send_request();
+    ipc_recv_reply();
+
+    return ipc.result;
+}
+
 s32 ios_ioctl(s32 fd, u32 ioctl, void *in_buf, size_t in_size, void *out_buf, size_t out_size) {
     flush_dcache_range(in_buf, in_size);
     flush_dcache_range(out_buf, out_size);

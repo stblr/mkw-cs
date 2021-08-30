@@ -2,32 +2,25 @@
 
 #include "apploader.h"
 #include "delay.h"
+#include "di.h"
 
-static bool run(void) {
-    struct apploader apploader;
-    if (!apploader_load(&apploader)) {
-        return false;
+int main(void) {
+    while (!di_init()) {
+        mdelay(100);
     }
 
     fn_apploader_game_entry game_entry;
-    if (!apploader_run(&apploader, &game_entry)) {
-        return false;
+    while (!apploader_load_and_run(&game_entry)) {
+        mdelay(100);
+
+        if (di_is_inserted()) {
+            di_reset();
+        }
     }
+
+    di_fini();
 
     game_entry();
-
-    return true;
-}
-
-int main(void) {
-    while (!run()) {
-        while (!di_is_inserted()) {
-            mdelay(1);
-        }
-
-        di_reset();
-        mdelay(1);
-    }
 
     return 0;
 }

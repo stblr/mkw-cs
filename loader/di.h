@@ -17,3 +17,5 @@ bool di_read(void *dst, u32 size, u32 offset);
 bool di_is_inserted(void);
 
 bool di_reset(void);
+
+bool di_fini(void);

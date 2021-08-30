@@ -27,6 +27,12 @@ enum partition_type {
     PARTITION_TYPE_CHANNEL_INSTALLER = 2,
 };
 
+typedef void (*fn_apploader_report)(const char *format, ...);
+
+typedef void (*fn_apploader_init)(fn_apploader_report);
+typedef s32 (*fn_apploader_main)(void **dst, u32 *size, u32 *shifted_offset);
+typedef fn_apploader_game_entry (*fn_apploader_close)(void);
+
 typedef void (*fn_apploader_entry)(fn_apploader_init *init, fn_apploader_main *main,
                                    fn_apploader_close *close);
 
@@ -68,11 +74,12 @@ static bool find_game_partition(struct partition *game_partition) {
     return false;
 }
 
-bool apploader_load(struct apploader *apploader) {
-    if (!di_init()) {
-        return false;
-    }
+static void report(const char *format, ...) {
+    (void)format;
+    // Nop
+}
 
+bool apploader_load_and_run(fn_apploader_game_entry *game_entry) {
     if (!di_read_disk_id()) {
         return false;
     }
@@ -96,30 +103,24 @@ bool apploader_load(struct apploader *apploader) {
     }
     invalidate_icache_range((void *)0x81200000, hdr.size + hdr.trailer);
 
-    hdr.entry(&apploader->init, &apploader->main, &apploader->close);
+    fn_apploader_init init;
+    fn_apploader_main main;
+    fn_apploader_close close;
+    hdr.entry(&init, &main, &close);
 
-    return true;
-}
-
-static void report(const char *format, ...) {
-    (void)format;
-    // Nop
-}
-
-bool apploader_run(const struct apploader *apploader, fn_apploader_game_entry *game_entry) {
-    apploader->init(report);
+    init(report);
 
     void *dst;
     u32 size;
     u32 shifted_offset;
-    while (apploader->main(&dst, &size, &shifted_offset) != 0) {
+    while (main(&dst, &size, &shifted_offset) != 0) {
         if (!di_read(dst, size, shifted_offset << 2)) {
             return false;
         }
         invalidate_icache_range(dst, size);
     }
 
-    *game_entry = apploader->close();
+    *game_entry = close();
 
     return true;
 }
