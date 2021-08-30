@@ -138,13 +138,13 @@ s32 ios_ioctl(s32 fd, u32 ioctl, void *in_buf, size_t in_size, void *out_buf, si
 }
 
 s32 ios_ioctlv(s32 fd, u32 ioctlv, size_t in_count, size_t out_count, struct ioctlv *vec) {
-    flush_dcache_range(vec, (in_count + out_count) * sizeof(struct ioctlv *));
     for (u32 i = 0; i < in_count + out_count; i++) {
         if (vec[i].data) {
             flush_dcache_range(vec[i].data, vec[i].size);
             vec[i].data = (void *)mem_virtual_to_physical(vec[i].data);
         }
     }
+    flush_dcache_range(vec, (in_count + out_count) * sizeof(struct ioctlv));
 
     memset(&ipc, 0, sizeof(ipc));
 
