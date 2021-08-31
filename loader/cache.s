@@ -2,6 +2,7 @@
 
 .include "aliases.s"
 
+.type invalidate_dcache_range, function
 .global invalidate_dcache_range
 invalidate_dcache_range:
     # Return early if the size is zero
@@ -26,6 +27,7 @@ invalidate_dcache_range:
 
     blr
 
+.type flush_dcache_range, function
 .global flush_dcache_range
 flush_dcache_range:
     # Return early if the size is zero
@@ -50,6 +52,7 @@ flush_dcache_range:
 
     blr
 
+.type invalidate_icache_range, function
 .global invalidate_icache_range
 invalidate_icache_range:
     # Return early if the size is zero

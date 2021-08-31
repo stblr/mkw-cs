@@ -2,6 +2,7 @@
 
 .include "aliases.s"
 
+.type mdelay, function
 .global mdelay
 mdelay:
     # Convert milliseconds to ticks
