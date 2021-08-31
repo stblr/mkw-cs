@@ -14,13 +14,13 @@ boot.elf: apploader.o cache.o delay.o di.o ios.o main.o memset.o start.o strlen.
 	$(CC) $(LDFLAGS) $^ -o $@
 
 apploader.o: apploader.c
-cache.o: cache.s
-delay.o: delay.s
+cache.o: cache.S
+delay.o: delay.S
 di.o: di.c
 ios.o: ios.c
 main.o: main.c
 memset.o: memset.c
-start.o: start.s
+start.o: start.S
 strlen.o: strlen.c
 
 .PHONY: clean

@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 
-.include "aliases.s"
+#include "aliases.S"
 
 .type invalidate_dcache_range, function
 .global invalidate_dcache_range

@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 
-.include "aliases.s"
+#include "aliases.S"
 
 .type mdelay, function
 .global mdelay

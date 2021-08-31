@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 
-.include "aliases.s"
+#include "aliases.S"
 
 .global _start
 _start:
@@ -10,7 +10,7 @@ _start:
     mtmsr r3
 
     # Initialize the stack pointer
-    .set stack_top, 0x8080fff0
+    #define stack_top 0x8080fff0
     lis r1, stack_top@h
     ori r1, r1, stack_top@l
 
