@@ -1,0 +1,4 @@
+[submodule "tools/mkw"]
+	path = tools/mkw
+	url = git@github.com:riidefi/mkw.git
+	branch = master
