@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: MIT
 
 #include "apploader.h"
+#include "cache.h"
 #include "delay.h"
 #include "di.h"
+#include "patches.h"
+
+#include <string.h>
 
 int main(void) {
     while (!di_init()) {
@@ -19,6 +23,21 @@ int main(void) {
     }
 
     di_fini();
+
+    u32 offset = 0;
+    while (offset < patches_size) {
+        void *start = *(void **)(patches + offset);
+        offset += 4;
+
+        u32 size = *(u32 *)(patches + offset);
+        offset += 4;
+
+        memcpy(start, patches + offset, size);
+        flush_dcache_range(start, size);
+        invalidate_icache_range(start, size);
+
+        offset += size;
+    }
 
     game_entry();
 
