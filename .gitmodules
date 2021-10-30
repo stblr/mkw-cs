@@ -1,3 +1,0 @@
-[submodule "tools/mkw"]
-	path = include/mkw
-	url = git@github.com:riidefi/mkw.git

@@ -1,0 +1,27 @@
+<wiidisc version="1" root="/mkw-cs">
+    <id game="RMC" />
+    <options>
+        <section name="mkw-cs">
+            <option name="Mode">
+                <choice name="Client">
+                    <patch id="cs" />
+                    <patch id="client" />
+                </choice>
+                <choice name="Server">
+                    <patch id="cs" />
+                    <patch id="server" />
+                </choice>
+            </option>
+        </section>
+    </options>
+    <patch id="cs">
+        <memory offset="0x800061c4" value="4bffde3d" />
+        <memory offset="0x80004000" valuefile="loader.bin" />
+    </patch>
+    <patch id="client">
+        <file disc="/cs/payload.bin" external="client.bin" create="true" />
+    </patch>
+    <patch id="server">
+        <file disc="/cs/payload.bin" external="server.bin" create="true" />
+    </patch>
+</wiidisc>

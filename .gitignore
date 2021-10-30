@@ -1,4 +1,4 @@
-*.o
-
-loader/boot.elf
-tools/llvm-project
+build
+build.ninja
+llvm-project
+__pycache__
