@@ -139,6 +139,7 @@ sourcefiles = {
         os.path.join('game', 'host_system', 'Rel.cxx'),
         os.path.join('game', 'host_system', 'SceneCreatorStatic.cxx'),
         os.path.join('game', 'host_system', 'SceneManager.cxx'),
+        os.path.join('game', 'host_system', 'System.cxx'),
     ],
     'server': [],
 }

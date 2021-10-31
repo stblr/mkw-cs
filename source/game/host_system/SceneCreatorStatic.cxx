@@ -5,7 +5,7 @@
 
 namespace System {
 
-REPLACE EGG::Scene *SceneCreatorStatic::create(s32 sceneId) {
+EGG::Scene *SceneCreatorStatic::create(s32 sceneId) {
     switch (sceneId) {
     case SCENE_ID_BOOT_STRAP:
         return new BootStrapScene;
@@ -14,6 +14,6 @@ REPLACE EGG::Scene *SceneCreatorStatic::create(s32 sceneId) {
     }
 }
 
-REPLACE void SceneCreatorStatic::destroy(s32 sceneId) {}
+void SceneCreatorStatic::destroy(s32 sceneId) {}
 
 } // namespace System

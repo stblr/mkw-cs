@@ -4,9 +4,11 @@ SECTIONS {
     incoming_childDestroy__Q23EGG5SceneFv = 0x80007f38;
     reinit__Q23EGG5SceneFv = 0x80007f3c;
     draw__Q23EGG5SceneFv = 0x80007f48;
+    main__Q26System6SystemFiPCPCc = 0x80008ef0;
+    getSystemHeap__Q26System6SystemFv = 0x80008fac;
+    initialize__Q26System6SystemFv = 0x80009194;
+    run__Q26System6SystemFv = 0x8000951c;
     changeSceneWithCreator__Q26System12SceneManagerFlPQ23EGG12SceneCreator = 0x80009844;
-    create__Q26System18SceneCreatorStaticFl = 0x8000a550;
-    destroy__Q26System18SceneCreatorStaticFl = 0x8000a5a8;
     DVDOpen = 0x8015e2bc;
     DVDReadPrio = 0x8015e834;
     DVDClose = 0x8015e568;
@@ -26,6 +28,12 @@ SECTIONS {
     __ct__Q23EGG5SceneFv = 0x8023ad10;
     __dt__Q23EGG5SceneFv = 0x8023ad84;
     changeSiblingScene__Q23EGG12SceneManagerFl = 0x8023afe0;
+    s_system__Q26System6System = 0x802a4080;
+    s_instance__Q26System6System = 0x80385fc8;
+    s_argc__Q26System6System = 0x80385fe8;
+    s_argv__Q26System6System = 0x80385fec;
+    s_sceneCreatorStatic__Q26System6System = 0x80385ff0;
+    s_parentInstance__Q26System6System = 0x80386f60;
 
     dolStart = 0x80004000;
     dolEnd = 0x8038917c;
