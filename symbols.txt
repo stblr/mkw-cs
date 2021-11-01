@@ -1,0 +1,39 @@
+0x80005f34 memcpy
+
+0x80007f34 outgoing_childCreate__Q23EGG5SceneFv
+0x80007f38 incoming_childDestroy__Q23EGG5SceneFv
+0x80007f3c reinit__Q23EGG5SceneFv
+0x80007f48 draw__Q23EGG5SceneFv
+0x80008ef0 main__Q26System6SystemFiPCPCc
+0x80008fac getSystemHeap__Q26System6SystemFv
+0x80009194 initialize__Q26System6SystemFv
+0x8000951c run__Q26System6SystemFv
+0x80009844 changeSceneWithCreator__Q26System12SceneManagerFlPQ23EGG12SceneCreator
+0x8015e2bc DVDOpen
+0x8015e834 DVDReadPrio
+0x8015e568 DVDClose
+0x8019fc68 OSInit
+0x801a1104 OSAllocFromMEM1ArenaLo
+0x801a162c DCFlushRange
+0x801a1710 ICInvalidateRange
+0x801a4ec4 OSFatal
+0x801a6d3c Relocate
+0x801a9e84 OSCreateThread
+0x801aa3ac OSJoinThread
+0x801aa4ec OSDetachThread
+0x801aa58c OSResumeThread
+0x80229dcc __nw__FUl
+0x80229de0 __nw__FUlPQ23EGG4Heapi
+0x80229e14 __dl__FPv
+0x8023ad10 __ct__Q23EGG5SceneFv
+0x8023ad84 __dt__Q23EGG5SceneFv
+0x8023afe0 changeSiblingScene__Q23EGG12SceneManagerFl
+
+0x802a4080 s_system__Q26System6System
+
+0x80385fc8 s_instance__Q26System6System
+0x80385fe8 s_argc__Q26System6System
+0x80385fec s_argv__Q26System6System
+0x80385ff0 s_sceneCreatorStatic__Q26System6System
+
+0x80386f60 s_parentInstance__Q26System6System

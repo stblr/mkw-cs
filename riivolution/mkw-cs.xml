@@ -15,13 +15,13 @@
         </section>
     </options>
     <patch id="cs">
-        <memory offset="0x800061c4" value="4bffde3d" />
-        <memory offset="0x80004000" valuefile="loader.bin" />
+        <memory offset="0x800061c4" value="4bffdd3d" />
+        <memory offset="0x80003f00" valuefile="loader{$__region}.bin" />
     </patch>
     <patch id="client">
-        <file disc="/cs/payload.bin" external="client.bin" create="true" />
+        <file disc="/cs/payload.bin" external="client{$__region}.bin" create="true" />
     </patch>
     <patch id="server">
-        <file disc="/cs/payload.bin" external="server.bin" create="true" />
+        <file disc="/cs/payload.bin" external="server{$__region}.bin" create="true" />
     </patch>
 </wiidisc>

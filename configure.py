@@ -2,7 +2,6 @@
 
 
 import os
-
 from vendor.ninja_syntax import Writer
 
 
@@ -14,26 +13,9 @@ n.newline()
 n.variable('builddir', 'build')
 n.newline()
 
-n.variable('configure', os.path.join('.', 'configure.py'))
-n.newline()
-
-n.rule(
-    'configure',
-    command = '$configure',
-    generator = True,
-)
-n.build(
-    'build.ninja',
-    'configure',
-    implicit = [
-        '$configure',
-        os.path.join('vendor', 'ninja_syntax.py'),
-    ],
-)
-n.newline()
-
 n.variable('cc', os.path.join('llvm-project', 'build', 'bin', 'clang'))
 n.variable('cxx', os.path.join('llvm-project', 'build', 'bin', 'clang'))
+n.variable('port', os.path.join('.', 'port.py'))
 n.variable('ld', os.path.join('llvm-project', 'build', 'bin', 'clang'))
 n.variable('find', os.path.join('.', 'find_replacements.py'))
 n.variable('objcopy', os.path.join('llvm-project', 'build', 'bin', 'llvm-objcopy'))
@@ -67,7 +49,6 @@ linkflags = [
     '-Wl,--nmagic',
     '-Wl,--no-dynamic-linker',
     '-Wl,--oformat,binary',
-    '-Wl,-T,rmcp.ld',
 ]
 n.variable('cflags', ' '.join(cflags))
 n.variable('cxxflags', ' '.join(cxxflags))
@@ -94,6 +75,13 @@ n.rule(
 n.newline()
 
 n.rule(
+    'port',
+    command = '$port $region $in $out',
+    description = 'PORT $out'
+)
+n.newline()
+
+n.rule(
     'pack',
     command = '$ld $packflags -r $in -o $out',
     description = 'PACK $out',
@@ -109,7 +97,7 @@ n.newline()
 
 n.rule(
     'rename',
-    command = '$objcopy --redefine-syms=$renamings $packed $out',
+    command = '$objcopy --redefine-syms=$renamings $in $out',
     description = 'RENAME $out',
 )
 n.newline()
@@ -118,6 +106,7 @@ linkparams = [
     '-Wl,--entry=$entry',
     '-Wl,-image-base=$base',
     '-Wl,--section-start=.text.$entry=$base',
+    '-Wl,-T,$script',
 ]
 n.rule(
     'link',
@@ -141,7 +130,12 @@ sourcefiles = {
         os.path.join('game', 'host_system', 'SceneManager.cxx'),
         os.path.join('game', 'host_system', 'System.cxx'),
     ],
-    'server': [],
+    'server': [
+        os.path.join('game', 'host_system', 'Dol.cxx'),
+        os.path.join('game', 'host_system', 'Patcher.cxx'),
+        os.path.join('game', 'host_system', 'Payload.cxx'),
+        os.path.join('game', 'host_system', 'Rel.cxx'),
+    ],
 }
 ofiles = {target: [] for target in sourcefiles}
 
@@ -161,65 +155,108 @@ for target in sourcefiles:
         ofiles[target] += [ofile]
     n.newline()
 
-n.build(
-    os.path.join('$builddir', 'loader.bin'),
-    'link',
-    ofiles['loader'],
-    variables = {
-        'entry': 'main__Q26System6LoaderFv',
-        'base': '0x80004000',
-    },
-)
+for region in ['P', 'E', 'J', 'K']:
+    n.build(
+        os.path.join('$builddir', f'RMC{region}.ld'),
+        'port',
+        os.path.join('.', 'symbols.txt'),
+        variables = {
+            'region': region,
+        },
+        implicit = '$port',
+    )
+    n.newline()
+
+for region in ['P', 'E', 'J', 'K']:
+    n.build(
+        os.path.join('$builddir', f'loader{region}.bin'),
+        'link',
+        ofiles['loader'],
+        variables = {
+            'entry': 'main__Q26System6LoaderFv',
+            'base': '0x80003f00',
+            'script': os.path.join('$builddir', f'RMC{region}.ld'),
+        },
+        implicit = os.path.join('$builddir', f'RMC{region}.ld'),
+    )
+    n.newline()
+
+for target in ['client', 'server']:
+    n.build(
+        os.path.join('$builddir', target, 'packed.o'),
+        'pack',
+        ofiles[target],
+    )
+    n.newline()
+    ofiles[target] = []
+
+for target in ['client', 'server']:
+    n.build(
+        [
+            os.path.join('$builddir', target, 'renamings.txt'),
+            os.path.join('$builddir', target, 'Patches.cxx'),
+        ],
+        'find',
+        os.path.join('$builddir', target, 'packed.o'),
+        implicit = '$find',
+    )
+    n.newline()
+
+for target in ['client', 'server']:
+    n.build(
+        os.path.join('$builddir', target, 'renamed.o'),
+        'rename',
+        os.path.join('$builddir', target, 'packed.o'),
+        variables = {
+            'renamings': os.path.join('$builddir', target, 'renamings.txt'),
+        },
+        implicit = os.path.join('$builddir', target, 'renamings.txt'),
+    )
+    n.newline()
+    ofiles[target] += [os.path.join('$builddir', target, 'renamed.o')]
+
+for target in ['client', 'server']:
+    n.build(
+        os.path.join('$builddir', target, 'Patches.o'),
+        'cxx',
+        os.path.join('$builddir', target, 'Patches.cxx'),
+    )
+    n.newline()
+    ofiles[target] += [os.path.join('$builddir', target, 'Patches.o')]
+
+for target in ['client', 'server']:
+    for region in ['P', 'E', 'J', 'K']:
+        n.build(
+            os.path.join('$builddir', f'{target}{region}.bin'),
+            'link',
+            ofiles[target],
+            variables = {
+                'entry': 'main__Q26System7PayloadFv',
+                'base': {
+                    'P': '0x8076db60',
+                    'E': '0x80769400',
+                    'J': '0x8076cca0',
+                    'K': '0x8075bfe0',
+                }[region],
+                'script': os.path.join('$builddir', f'RMC{region}.ld'),
+            },
+            implicit = os.path.join('$builddir', f'RMC{region}.ld'),
+        )
+        n.newline()
+
+n.variable('configure', os.path.join('.', 'configure.py'))
 n.newline()
 
-n.build(
-    os.path.join('$builddir', 'client', 'packed.o'),
-    'pack',
-    ofiles['client'],
+n.rule(
+    'configure',
+    command = '$configure',
+    generator = True,
 )
-n.newline()
-ofiles['client'] = []
-
 n.build(
-    [
-        os.path.join('$builddir', 'client', 'renamings.txt'),
-        os.path.join('$builddir', 'client', 'Patches.cxx'),
+    'build.ninja',
+    'configure',
+    implicit = [
+        '$configure',
+        os.path.join('vendor', 'ninja_syntax.py'),
     ],
-    'find',
-    os.path.join('$builddir', 'client', 'packed.o'),
-    implicit = '$find',
-)
-n.newline()
-
-n.build(
-    os.path.join('$builddir', 'client', 'renamed.o'),
-    'rename',
-    [
-        os.path.join('$builddir', 'client', 'packed.o'),
-        os.path.join('$builddir', 'client', 'renamings.txt'),
-    ],
-    variables = {
-        'packed': os.path.join('$builddir', 'client', 'packed.o'),
-        'renamings': os.path.join('$builddir', 'client', 'renamings.txt'),
-    },
-)
-n.newline()
-ofiles['client'] += [os.path.join('$builddir', 'client', 'renamed.o')]
-
-n.build(
-    os.path.join('$builddir', 'client', 'Patches.o'),
-    'cxx',
-    os.path.join('$builddir', 'client', 'Patches.cxx'),
-)
-n.newline()
-ofiles['client'] += [os.path.join('$builddir', 'client', 'Patches.o')]
-
-n.build(
-    os.path.join('$builddir', 'client.bin'),
-    'link',
-    ofiles['client'],
-    variables = {
-        'entry': 'main__Q26System7PayloadFv',
-        'base': '0x8076db60',
-    },
 )

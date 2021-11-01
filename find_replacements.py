@@ -2,7 +2,6 @@
 
 
 from argparse import ArgumentParser
-
 from elftools.elf.elffile import ELFFile
 
 
