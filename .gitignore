@@ -1,4 +1,4 @@
 build
 build.ninja
-llvm-project
 __pycache__
+tools

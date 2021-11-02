@@ -13,12 +13,12 @@ n.newline()
 n.variable('builddir', 'build')
 n.newline()
 
-n.variable('cc', os.path.join('llvm-project', 'build', 'bin', 'clang'))
-n.variable('cxx', os.path.join('llvm-project', 'build', 'bin', 'clang'))
+n.variable('cc', os.path.join('tools', 'clang'))
+n.variable('cxx', os.path.join('tools', 'clang'))
 n.variable('port', os.path.join('.', 'port.py'))
-n.variable('ld', os.path.join('llvm-project', 'build', 'bin', 'clang'))
+n.variable('ld', os.path.join('tools', 'clang'))
 n.variable('find', os.path.join('.', 'find_replacements.py'))
-n.variable('objcopy', os.path.join('llvm-project', 'build', 'bin', 'llvm-objcopy'))
+n.variable('objcopy', os.path.join('tools', 'llvm-objcopy'))
 n.newline()
 
 cflags = [
