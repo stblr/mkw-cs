@@ -27,40 +27,14 @@ u32 getSize() {
     return &relEnd - &relStart;
 }
 
-Loader::Loader(EGG::Heap *heap) : m_heap(heap) {
-    u32 stackSize = 0x5000;
-    u8 *stack = (u8 *)m_heap->alloc(stackSize, 0x20);
-    void *stackBase = stack + stackSize;
-    OSCreateThread(&m_thread, start, this, stackBase, stackSize, 20, 0);
-    OSResumeThread(&m_thread);
-}
-
-Loader::~Loader() {
-    OSDetachThread(&m_thread);
-}
-
-EntryFunction Loader::poke() {
-    void *entry;
-    if (!OSJoinThread(&m_thread, &entry)) {
-        return nullptr;
-    }
-
-    return reinterpret_cast<EntryFunction>(entry);
-}
-
-void *Loader::start(void *loader) {
-    EntryFunction entry = static_cast<Loader *>(loader)->run();
-    return reinterpret_cast<void *>(entry);
-}
-
-EntryFunction Loader::run() {
+EntryFunction load(EGG::Heap *heap) {
     DVDFileInfo fileInfo;
     if (!DVDOpen("/rel/StaticR.rel", &fileInfo)) {
         return nullptr;
     }
 
     s32 size = OSRoundUp32B(fileInfo.length);
-    void *src = m_heap->alloc(size, 0x20);
+    void *src = heap->alloc(size, 0x20);
     if (!src) {
         DVDClose(&fileInfo);
         return nullptr;
@@ -99,10 +73,40 @@ EntryFunction Loader::run() {
     Relocate(nullptr, dstHeader);
     Relocate(dstHeader, dstHeader);
 
-    m_heap->free(src);
+    heap->free(src);
 
     auto *prologSectionInfo = dstSectionInfo + dstHeader->prologSection;
     return reinterpret_cast<EntryFunction>(prologSectionInfo->offset + dstHeader->prolog);
+}
+
+Loader::Loader(EGG::Heap *heap) : m_heap(heap) {
+    u32 stackSize = 0x5000;
+    u8 *stack = (u8 *)m_heap->alloc(stackSize, 0x20);
+    void *stackBase = stack + stackSize;
+    OSCreateThread(&m_thread, start, this, stackBase, stackSize, 20, 0);
+    OSResumeThread(&m_thread);
+}
+
+Loader::~Loader() {
+    OSDetachThread(&m_thread);
+}
+
+EntryFunction Loader::poke() {
+    void *entry;
+    if (!OSJoinThread(&m_thread, &entry)) {
+        return nullptr;
+    }
+
+    return reinterpret_cast<EntryFunction>(entry);
+}
+
+void *Loader::start(void *loader) {
+    EntryFunction entry = static_cast<Loader *>(loader)->run();
+    return reinterpret_cast<void *>(entry);
+}
+
+EntryFunction Loader::run() {
+    return load(m_heap);
 }
 
 } // namespace Rel

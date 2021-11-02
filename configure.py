@@ -132,6 +132,7 @@ sourcefiles = {
     ],
     'server': [
         os.path.join('game', 'host_system', 'Dol.cxx'),
+        os.path.join('game', 'host_system', 'Main.cxx'),
         os.path.join('game', 'host_system', 'Patcher.cxx'),
         os.path.join('game', 'host_system', 'Payload.cxx'),
         os.path.join('game', 'host_system', 'Rel.cxx'),

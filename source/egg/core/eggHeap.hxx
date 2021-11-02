@@ -12,6 +12,8 @@ class Allocator;
 
 class Heap : public Disposer {
 public:
+    static void initialize();
+
     virtual ~Heap();
 
     virtual s32 getHeapKind() const = 0;
@@ -29,6 +31,8 @@ public:
     virtual u32 getAllocatableSize(s32 align) = 0;
 
     virtual u32 adjust() = 0;
+
+    Heap *becomeCurrentHeap();
 
 private:
     u8 _10[0x38 - 0x10];

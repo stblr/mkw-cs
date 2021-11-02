@@ -17,6 +17,8 @@ void *getEnd();
 
 u32 getSize();
 
+EntryFunction load(EGG::Heap *heap);
+
 class Loader {
 public:
     Loader(EGG::Heap *heap);

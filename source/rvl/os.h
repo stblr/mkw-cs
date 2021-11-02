@@ -2,6 +2,9 @@
 
 #include "gx/GXStruct.h"
 
+void *OSGetMEM1ArenaHi(void);
+void *OSGetMEM1ArenaLo(void);
+
 void *OSAllocFromMEM1ArenaLo(u32 size, u32 align);
 
 #define OSRoundUp32B(x) (((u32)(x) + 32 - 1) & ~(32 - 1))
