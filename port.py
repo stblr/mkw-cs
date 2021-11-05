@@ -16,13 +16,11 @@ class Section:
 
 @dataclass
 class SrcBinary:
+    start: int
     sections: [Section]
 
     def __contains__(self, address):
         return any(address in section for section in self.sections)
-
-    def start(self):
-        return self.sections[0].start
 
 @dataclass
 class DstBinary:
@@ -44,6 +42,7 @@ class Chunk:
 
 SRC_BINARIES = {
     'dol': SrcBinary(
+        0x80004000,
         [
             Section(0x80004000, 0x80006460),
             Section(0x80006460, 0x80006a20),
@@ -61,6 +60,7 @@ SRC_BINARIES = {
         ],
     ),
     'rel': SrcBinary(
+        0x805102e0,
         [
             Section(0x805103b4, 0x8088f400),
             Section(0x8088f400, 0x8088f704),
@@ -163,10 +163,13 @@ for symbol in symbols.readlines():
     address, name = symbol.split()
     address = int(address, 16)
     binary_name = get_binary_name(address)
+    is_rel_bss = 0x809bd6e0 <= address < 0x809c4f90
     address = port(args.region, address)
     if address is None:
         sys.exit(f'Couldn\'t port symbol {name} to region {args.region}!')
-    address -= SRC_BINARIES[binary_name].start()
+    if is_rel_bss:
+        address -= 0xe02e0
+    address -= SRC_BINARIES[binary_name].start
     address += DST_BINARIES[args.region][binary_name].start
     write_symbol(out_file, name, address)
 
