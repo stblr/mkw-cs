@@ -1,10 +1,10 @@
-#include "System.hxx"
+#include "RkSystem.hxx"
 
 #include "Scene.hxx"
 
 namespace System {
 
-REPLACE void System::main(int argc, const char *const *argv) {
+REPLACE void RkSystem::main(int argc, const char *const *argv) {
     s_instance = &s_system;
     s_parentInstance = &s_system;
 

@@ -6,8 +6,10 @@
 namespace System {
 
 // Don't bother with the full inheritance and templates for now
-class System {
+class RkSystem {
 public:
+    static void main(int argc, const char *const *argv);
+
     virtual void vf_08();
     virtual EGG::Heap *getSystemHeap();
     virtual void vf_10();
@@ -22,15 +24,13 @@ public:
     virtual void run();
     virtual void initialize();
 
-    static void main(int argc, const char *const *argv);
-
     static int s_argc;
     static const char *const *s_argv;
 
 private:
-    static System s_system;
-    static System *s_instance;
-    static System *s_parentInstance; // Actually part of the parent class
+    static RkSystem s_system;
+    static RkSystem *s_instance;
+    static RkSystem *s_parentInstance; // Actually part of the parent class
     static SceneCreatorStatic *s_sceneCreatorStatic;
 
     u8 _04[0x54 - 0x04];
