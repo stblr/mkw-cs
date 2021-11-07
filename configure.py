@@ -25,6 +25,7 @@ cflags = [
     '-fdata-sections',
     '-ffunction-sections',
     '-fno-asynchronous-unwind-tables',
+    '-fno-zero-initialized-in-bss',
     '-fshort-wchar',
     '-iquote', 'source',
     '-isystem', 'source',
@@ -58,7 +59,7 @@ n.newline()
 
 n.rule(
     'cc',
-    command = '$cc -MMD -MT $out -MF $out.d $cflags -c $in -o $out',
+    command = '$cc -MMD -MT $out -MF $out.d $cflags -D $target -c $in -o $out',
     depfile = '$out.d',
     deps = 'gcc',
     description = 'CC $out',
@@ -67,7 +68,7 @@ n.newline()
 
 n.rule(
     'cxx',
-    command = '$cxx -MMD -MT $out -MF $out.d $cxxflags -c $in -o $out',
+    command = '$cxx -MMD -MT $out -MF $out.d $cxxflags -D $target -c $in -o $out',
     depfile = '$out.d',
     deps = 'gcc',
     description = 'CXX $out',
@@ -126,16 +127,26 @@ sourcefiles = {
         os.path.join('game', 'host_system', 'Patcher.cxx'),
         os.path.join('game', 'host_system', 'Payload.cxx'),
         os.path.join('game', 'host_system', 'Rel.cxx'),
+        os.path.join('game', 'host_system', 'RkSystem.cxx'),
         os.path.join('game', 'host_system', 'SceneCreatorStatic.cxx'),
         os.path.join('game', 'host_system', 'SceneManager.cxx'),
-        os.path.join('game', 'host_system', 'System.cxx'),
     ],
     'server': [
+        os.path.join('game', 'gfx', 'Gfx.c'),
         os.path.join('game', 'host_system', 'Dol.cxx'),
         os.path.join('game', 'host_system', 'Main.cxx'),
         os.path.join('game', 'host_system', 'Patcher.cxx'),
         os.path.join('game', 'host_system', 'Payload.cxx'),
         os.path.join('game', 'host_system', 'Rel.cxx'),
+        os.path.join('game', 'item', 'ItemManager.cxx'),
+        os.path.join('game', 'item', 'ItemObj.cxx'),
+        os.path.join('game', 'item', 'ItemObjProperties.cxx'),
+        os.path.join('game', 'kart', 'KartUnit.cxx'),
+        os.path.join('game', 'object', 'ObjectBase.cxx'),
+        os.path.join('game', 'object', 'ObjectManager.cxx'),
+        os.path.join('game', 'system', 'GameScene.cxx'),
+        os.path.join('game', 'system', 'ResourceManager.cxx'),
+        os.path.join('game', 'system', 'RootScene.cxx'),
     ],
 }
 ofiles = {target: [] for target in sourcefiles}
@@ -152,6 +163,9 @@ for target in sourcefiles:
             ofile,
             rule,
             os.path.join('source', sourcefile),
+            variables = {
+                'target': target.upper(),
+            },
         )
         ofiles[target] += [ofile]
     n.newline()
@@ -221,6 +235,9 @@ for target in ['client', 'server']:
         os.path.join('$builddir', target, 'Patches.o'),
         'cxx',
         os.path.join('$builddir', target, 'Patches.cxx'),
+        variables = {
+            'target': target,
+        },
     )
     n.newline()
     ofiles[target] += [os.path.join('$builddir', target, 'Patches.o')]
