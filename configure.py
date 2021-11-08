@@ -25,6 +25,7 @@ cflags = [
     '-fdata-sections',
     '-ffunction-sections',
     '-fno-asynchronous-unwind-tables',
+    '-fno-zero-initialized-in-bss',
     '-fshort-wchar',
     '-iquote', 'source',
     '-isystem', 'source',
