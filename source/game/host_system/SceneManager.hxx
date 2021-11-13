@@ -6,7 +6,7 @@ namespace System {
 
 class SceneManager : public EGG::SceneManager {
 public:
-    void changeSceneWithCreator(s32 sceneId, EGG::SceneCreator *creator);
+    void my_changeSceneWithCreator(s32 sceneId, EGG::SceneCreator *creator);
 };
 
 } // namespace System

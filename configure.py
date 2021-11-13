@@ -17,8 +17,6 @@ n.variable('cc', os.path.join('tools', 'clang'))
 n.variable('cxx', os.path.join('tools', 'clang'))
 n.variable('port', os.path.join('.', 'port.py'))
 n.variable('ld', os.path.join('tools', 'clang'))
-n.variable('find', os.path.join('.', 'find_replacements.py'))
-n.variable('objcopy', os.path.join('tools', 'llvm-objcopy'))
 n.newline()
 
 cflags = [
@@ -39,13 +37,10 @@ cxxflags = [
     '-fno-exceptions',
     '-fno-rtti',
 ]
-packflags = [
+linkflags = [
     '-fuse-ld=lld',
     '-nostdlib',
     '-target', 'powerpc-kuribo-eabi',
-]
-linkflags = [
-    '$packflags',
     '-Wl,--gc-sections',
     '-Wl,--nmagic',
     '-Wl,--no-dynamic-linker',
@@ -53,13 +48,12 @@ linkflags = [
 ]
 n.variable('cflags', ' '.join(cflags))
 n.variable('cxxflags', ' '.join(cxxflags))
-n.variable('packflags', ' '.join(packflags))
 n.variable('linkflags', ' '.join(linkflags))
 n.newline()
 
 n.rule(
     'cc',
-    command = '$cc -MMD -MT $out -MF $out.d $cflags -c $in -o $out',
+    command = '$cc -MMD -MT $out -MF $out.d $cflags -D $target -c $in -o $out',
     depfile = '$out.d',
     deps = 'gcc',
     description = 'CC $out',
@@ -68,7 +62,7 @@ n.newline()
 
 n.rule(
     'cxx',
-    command = '$cxx -MMD -MT $out -MF $out.d $cxxflags -c $in -o $out',
+    command = '$cxx -MMD -MT $out -MF $out.d $cxxflags -D $target -c $in -o $out',
     depfile = '$out.d',
     deps = 'gcc',
     description = 'CXX $out',
@@ -79,27 +73,6 @@ n.rule(
     'port',
     command = '$port $region $in $out',
     description = 'PORT $out'
-)
-n.newline()
-
-n.rule(
-    'pack',
-    command = '$ld $packflags -r $in -o $out',
-    description = 'PACK $out',
-)
-n.newline()
-
-n.rule(
-    'find',
-    command = '$find $in $out',
-    description = 'FIND $out',
-)
-n.newline()
-
-n.rule(
-    'rename',
-    command = '$objcopy --redefine-syms=$renamings $in $out',
-    description = 'RENAME $out',
 )
 n.newline()
 
@@ -127,16 +100,16 @@ sourcefiles = {
         os.path.join('game', 'host_system', 'Patcher.cxx'),
         os.path.join('game', 'host_system', 'Payload.cxx'),
         os.path.join('game', 'host_system', 'Rel.cxx'),
+        os.path.join('game', 'host_system', 'RkSystem.cxx'),
         os.path.join('game', 'host_system', 'SceneCreatorStatic.cxx'),
         os.path.join('game', 'host_system', 'SceneManager.cxx'),
-        os.path.join('game', 'host_system', 'System.cxx'),
     ],
     'server': [
         os.path.join('game', 'host_system', 'Dol.cxx'),
-        os.path.join('game', 'host_system', 'Main.cxx'),
         os.path.join('game', 'host_system', 'Patcher.cxx'),
         os.path.join('game', 'host_system', 'Payload.cxx'),
         os.path.join('game', 'host_system', 'Rel.cxx'),
+        os.path.join('game', 'host_system', 'RkSystem.cxx'),
     ],
 }
 ofiles = {target: [] for target in sourcefiles}
@@ -153,6 +126,9 @@ for target in sourcefiles:
             ofile,
             rule,
             os.path.join('source', sourcefile),
+            variables = {
+                'target': target.upper(),
+            },
         )
         ofiles[target] += [ofile]
     n.newline()
@@ -182,49 +158,6 @@ for region in ['P', 'E', 'J', 'K']:
         implicit = os.path.join('$builddir', f'RMC{region}.ld'),
     )
     n.newline()
-
-for target in ['client', 'server']:
-    n.build(
-        os.path.join('$builddir', target, 'packed.o'),
-        'pack',
-        ofiles[target],
-    )
-    n.newline()
-    ofiles[target] = []
-
-for target in ['client', 'server']:
-    n.build(
-        [
-            os.path.join('$builddir', target, 'renamings.txt'),
-            os.path.join('$builddir', target, 'Patches.cxx'),
-        ],
-        'find',
-        os.path.join('$builddir', target, 'packed.o'),
-        implicit = '$find',
-    )
-    n.newline()
-
-for target in ['client', 'server']:
-    n.build(
-        os.path.join('$builddir', target, 'renamed.o'),
-        'rename',
-        os.path.join('$builddir', target, 'packed.o'),
-        variables = {
-            'renamings': os.path.join('$builddir', target, 'renamings.txt'),
-        },
-        implicit = os.path.join('$builddir', target, 'renamings.txt'),
-    )
-    n.newline()
-    ofiles[target] += [os.path.join('$builddir', target, 'renamed.o')]
-
-for target in ['client', 'server']:
-    n.build(
-        os.path.join('$builddir', target, 'Patches.o'),
-        'cxx',
-        os.path.join('$builddir', target, 'Patches.cxx'),
-    )
-    n.newline()
-    ofiles[target] += [os.path.join('$builddir', target, 'Patches.o')]
 
 for target in ['client', 'server']:
     for region in ['P', 'E', 'J', 'K']:

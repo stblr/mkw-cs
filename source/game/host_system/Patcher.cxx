@@ -7,15 +7,18 @@ extern "C" {
     #include <rvl/os/OSCache.h>
 }
 
+extern "C" const Patch __start_patches;
+extern "C" const Patch __stop_patches;
+
 namespace System {
 namespace Patcher {
 
-Binary Patch::getBinary() const {
-    if (from >= Dol::getStart() && from < Dol::getEnd()) {
+static Binary getBinary(void *address) {
+    if (address >= Dol::getStart() && address < Dol::getEnd()) {
         return Binary::Dol;
     }
 
-    if (from >= Rel::getStart() && from < Rel::getEnd()) {
+    if (address >= Rel::getStart() && address < Rel::getEnd()) {
         return Binary::Rel;
     }
 
@@ -23,14 +26,15 @@ Binary Patch::getBinary() const {
 }
 
 void patch(Binary binary) {
+    const Patch *patches = &__start_patches;
+    u32 patchCount = &__stop_patches - &__start_patches;
+
     for (u32 i = 0; i < patchCount; i++) {
-        if (patches[i].getBinary() != binary) {
+        if (getBinary(patches[i].from) != binary) {
             continue;
         }
 
-        s32 from = reinterpret_cast<s32>(patches[i].from);
-        s32 to = reinterpret_cast<s32>(patches[i].to);
-        s32 diff = to - from;
+        s32 diff = patches[i].to - patches[i].from;
         u32 ins = 0x12 << 26 | diff;
         *reinterpret_cast<u32 *>(patches[i].from) = ins;
 

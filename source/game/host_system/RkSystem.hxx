@@ -8,7 +8,7 @@ namespace System {
 // Don't bother with the full inheritance and templates for now
 class RkSystem {
 public:
-    static void main(int argc, const char *const *argv);
+    static void my_main(int argc, const char *const *argv);
 
     virtual void vf_08();
     virtual EGG::Heap *getSystemHeap();
