@@ -9,7 +9,7 @@ GameScene *GameScene::createStubInstance(EGG::Heap *heap) {
     return s_instance;
 }
 
-REPLACE GameScene *GameScene::getInstance() {
+GameScene *GameScene::my_getInstance() {
     return s_instance;
 }
 
@@ -21,3 +21,5 @@ GameScene::GameScene(EGG::Heap *heap) {
 }
 
 } // namespace System
+
+REPLACE(getInstance__Q26System9GameSceneFv);

@@ -7,7 +7,7 @@ public:
     static void init();
 
 private:
-    static bool isAwards(); // Likely not really part of this class
+    static bool my_isAwards(); // Likely not really part of this class
 };
 
 } // namespace Item

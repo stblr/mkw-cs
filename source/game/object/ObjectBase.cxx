@@ -4,6 +4,8 @@
 
 namespace Object {
 
-REPLACE void ObjectBase::loadModel() {}
+void ObjectBase::my_loadModel() {}
 
 } // namespace Object
+
+REPLACE(loadModel__Q26Object10ObjectBaseFv);

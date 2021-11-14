@@ -7,7 +7,7 @@ namespace System {
 class GameScene : public Scene {
 public:
     static GameScene *createStubInstance(EGG::Heap *heap);
-    static GameScene *getInstance();
+    static GameScene *my_getInstance();
 
     ~GameScene() override;
     void calc() override;

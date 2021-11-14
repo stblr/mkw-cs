@@ -19,7 +19,7 @@ public:
 
     MultiDvdArchive *load(ResourceType type, EGG::Heap *heap, const char *name);
     MultiDvdArchive *loadCourse(u32 courseId, EGG::Heap *heap, bool splitScreen);
-    void process();
+    void my_process();
 
 private:
     static ResourceManager *s_instance;

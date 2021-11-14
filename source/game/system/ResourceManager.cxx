@@ -4,9 +4,11 @@
 
 namespace System {
 
-REPLACE void ResourceManager::process() {
+void ResourceManager::my_process() {
     OSMessageQueue *messageQueue = SystemManager::getInstance()->getMessageQueue();
     OSReceiveMessage(messageQueue, nullptr, OS_MESSAGE_BLOCK);
 }
 
 } // namespace System
+
+REPLACE(process__Q26System15ResourceManagerFv);

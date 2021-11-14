@@ -48,6 +48,7 @@ public:
     virtual void vf_a8();
     virtual void vf_ac();
     virtual void vf_b0();
+    void my_loadModel();
 };
 
 } // namespace Object

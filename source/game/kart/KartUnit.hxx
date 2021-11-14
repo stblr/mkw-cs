@@ -17,13 +17,14 @@ private:
     virtual ~KartUnit();
     virtual void vf_0c();
     virtual void vf_10();
-    virtual void initTires();
+    virtual void createTires();
     virtual void vf_18();
     void init();
-    void createTires();
-    void createSub(); // TODO better name
-    void createGraphics(); // TODO better name
-    void initTirePhysics();
+    void prepareTiresAndSuspensions();
+    void createAndInitSub(); // TODO better name
+    void createAndInitBody();
+    void initTires();
+    void createModel();
 
     u8 _10[0x14 - 0x10];
     KartParams *m_params;

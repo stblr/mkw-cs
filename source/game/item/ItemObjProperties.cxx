@@ -4,8 +4,10 @@
 
 namespace Item {
 
-REPLACE bool ItemObjProperties::isAwards() {
+bool ItemObjProperties::my_isAwards() {
     return false;
 }
 
 } // namespace Item
+
+REPLACE(isAwards__Q24Item17ItemObjPropertiesFv);

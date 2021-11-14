@@ -1,10 +1,12 @@
 #include "RkSystem.hxx"
 
 #include "Scene.hxx"
+#include "Server.hxx"
 
 namespace System {
 
-REPLACE void RkSystem::main(int argc, const char *const *argv) {
+#ifdef CLIENT
+void RkSystem::my_main(int argc, const char *const *argv) {
     s_instance = &s_system;
     s_parentInstance = &s_system;
 
@@ -20,5 +22,14 @@ REPLACE void RkSystem::main(int argc, const char *const *argv) {
 
     s_system.run();
 }
+#endif
+
+#ifdef SERVER
+void RkSystem::my_main(int argc, const char *const *argv) {
+    Server::run();
+}
+#endif
 
 } // namespace System
+
+REPLACE(main__Q26System8RkSystemFiPCPCc);

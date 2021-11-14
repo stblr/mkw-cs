@@ -1,3 +1,5 @@
+#include "Server.hxx"
+
 #include "Patcher.hxx"
 #include "Rel.hxx"
 #include "RkSystem.hxx"
@@ -25,9 +27,10 @@ extern "C" {
     #include <rvl/os.h>
 }
 
-REPLACE int main(int argc, char **argv) {
-    using namespace System;
+namespace System {
+namespace Server {
 
+void run() {
     EGG::Heap::initialize();
     void *start = OSGetMEM1ArenaLo();
     u32 size = static_cast<u8 *>(OSGetMEM1ArenaHi()) - static_cast<u8 *>(OSGetMEM1ArenaLo());
@@ -81,6 +84,7 @@ REPLACE int main(int argc, char **argv) {
     itemManager->init();
     objectManager->init();
     aiManager->init();
-
-    return 0;
 }
+
+} // namespace Server
+} // namespace System

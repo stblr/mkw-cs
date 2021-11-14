@@ -1,18 +1,6 @@
-#include "KartUnit.hxx"
+#include <Common.hxx>
 
-namespace Kart {
-
-REPLACE void KartUnit::init() {
-    createTires();
-    createSub();
-    createGraphics();
-    //initTires();
-    // FIXME HACK to have the correct vtable offset
-    void *hack0 = this;
-    void (*hack1)(void *) = (void (*)(void *))(((u32 **)hack0)[3][5]);
-    hack1(hack0);
-    initTirePhysics();
-    m_accessor.params = m_params;
-}
-
-} // namespace Kart
+JUMP(init__Q24Kart8KartUnitFv, 0x30, 0xa0);
+JUMP(init__Q24Kart8KartUnitFv, 0x198, 0x1a8);
+JUMP(init__Q24Kart8KartUnitFv, 0x1fc, 0x26c);
+JUMP(init__Q24Kart8KartUnitFv, 0x35c, 0x3b4);

@@ -27,7 +27,7 @@ class ItemObj {
 public:
 
     ItemObj();
-    void init(u16 globalId, u16 localId, ItemObjId);
+    void my_init(u16 globalId, u16 localId, ItemObjId);
 
 private:
     u8 _000[0x004];
