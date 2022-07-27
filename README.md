@@ -1,5 +1,7 @@
 # mkw-cs
 
+This project is abandoned in favor of [stblr/mkw-sp](https://github.com/stblr/mkw-sp).
+
 Client-server netcode for Mario Kart Wii, currently in early stages of development.
 
 ## Overview
